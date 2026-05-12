@@ -1,0 +1,726 @@
+/* ============================================
+   Base Reset & Variables
+   ============================================ */
+:root {
+    --primary: #2b6cbe;
+    --primary-light: #eaf2fb;
+    --primary-dark: #1d4f8b;
+    --danger: #c0392b;
+    --danger-light: #fdedec;
+    --text: #2c3e50;
+    --text-muted: #7f8c9b;
+    --bg: #eef1f5;
+    --bg-white: #ffffff;
+    --border: #dce1e8;
+    --shadow: 0 2px 8px rgba(0,0,0,0.07);
+    --radius: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============================================
+   Top Bar
+   ============================================ */
+.topbar {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.topbar-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.current-user {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.logout-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* ============================================
+   Workspace: 两个部分并列
+   ============================================ */
+.workspace {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 20px 28px;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ============================================
+   Panel (通用)
+   ============================================ */
+.panel {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 0;
+    gap: 12px;
+}
+
+.panel-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================
+   jQuery UI Override: Theme Colors
+   ============================================ */
+.ui-widget {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Buttons */
+.ui-button {
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    padding: 6px 16px !important;
+    outline: none !important;
+    border-color: var(--border) !important;
+    background: #fff !important;
+    color: var(--text) !important;
+    transition: all 0.15s !important;
+}
+
+.ui-button:hover {
+    border-color: var(--primary) !important;
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+}
+
+.ui-button:active {
+    transform: scale(0.97);
+}
+
+/* Primary button style */
+.ui-button.primary-btn {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+.ui-button.primary-btn:hover {
+    background: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    color: #fff !important;
+}
+
+/* Danger button style */
+.ui-button.danger-btn {
+    background: var(--danger) !important;
+    border-color: var(--danger) !important;
+    color: #fff !important;
+}
+
+.ui-button.danger-btn:hover {
+    background: #a93226 !important;
+    border-color: #a93226 !important;
+    color: #fff !important;
+}
+
+/* ============================================
+   jQuery UI Override: Tabs (上传区域)
+   ============================================ */
+.panel-upload .ui-tabs {
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.panel-upload .ui-tabs-nav {
+    display: flex;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    background: transparent;
+    padding: 0 20px;
+    border-radius: 0;
+}
+
+.panel-upload .ui-tabs-nav li {
+    margin: 0;
+    border: none;
+    background: transparent;
+    list-style: none;
+}
+
+.panel-upload .ui-tabs-nav li a {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: none;
+    outline: none;
+    float: none;
+}
+
+.panel-upload .ui-tabs-nav li.ui-tabs-active {
+    margin-bottom: -2px;
+}
+
+.panel-upload .ui-tabs-nav li.ui-tabs-active a {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+    background: transparent;
+}
+
+.panel-upload .ui-tabs-nav li.ui-state-hover a {
+    color: var(--primary);
+}
+
+.panel-upload .ui-tabs-panel {
+    padding: 20px;
+    border: none;
+    background: transparent;
+}
+
+/* ============================================
+   Upload Dropzone
+   ============================================ */
+.upload-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 120px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    padding: 20px;
+}
+
+.upload-dropzone:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-dropzone input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+}
+
+.dropzone-icon {
+    font-size: 32px;
+    color: var(--text-muted);
+    line-height: 1;
+}
+
+.upload-dropzone:hover .dropzone-icon {
+    color: var(--primary);
+}
+
+.dropzone-text {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.upload-dropzone:hover .dropzone-text {
+    color: var(--primary);
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.file-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-height: 18px;
+    text-align: center;
+    word-break: break-all;
+}
+
+.upload-progress {
+    width: 120px;
+    height: 18px;
+}
+
+/* ============================================
+   jQuery UI Override: Progressbar
+   ============================================ */
+.ui-progressbar {
+    border-radius: 10px;
+    height: 18px;
+    border-color: var(--border);
+    background: #f0f2f5;
+}
+
+.ui-progressbar .ui-progressbar-value {
+    background: var(--primary);
+    border-radius: 10px;
+    margin: 0;
+    border: none;
+}
+
+/* ============================================
+   Panel: 文件列表
+   ============================================ */
+.panel-files .panel-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-files {
+    overflow: hidden;
+}
+
+.file-count {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   File Table Header
+   ============================================ */
+.file-table-header {
+    display: grid;
+    grid-template-columns: 1fr 90px 150px 130px;
+    padding: 10px 20px;
+    background: #f8f9fb;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+}
+
+.fc-actions {
+    text-align: right;
+}
+
+/* ============================================
+   File List Body
+   ============================================ */
+.file-list-body {
+    min-height: 200px;
+}
+
+/* ============================================
+   File Item Rows
+   ============================================ */
+.file-item {
+    display: grid;
+    grid-template-columns: 1fr 90px 150px 130px;
+    padding: 0 20px;
+    height: 46px;
+    align-items: center;
+    border-bottom: 1px solid #f0f2f5;
+    transition: background 0.12s;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item:hover {
+    background: #f5f8fd;
+}
+
+/* Name cell */
+.name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.file-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.file-icon.folder {
+    background: #f5b342;
+}
+
+.file-icon.file {
+    background: var(--primary);
+}
+
+.file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    color: var(--text);
+}
+
+/* Size cell */
+.size-cell {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Date cell */
+.date-cell {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Actions cell */
+.actions-cell {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+/* Download/Delete action buttons */
+.actions-cell .ui-button {
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+    min-height: 28px;
+}
+
+/* ============================================
+   Folder Collapse
+   ============================================ */
+.collapse-toggle {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    color: #aaa;
+    user-select: none;
+    transition: transform 0.2s;
+    border-radius: 3px;
+}
+
+.collapse-toggle:hover {
+    background: #e8ecf1;
+    color: #666;
+}
+
+.collapse-toggle.open {
+    transform: rotate(90deg);
+}
+
+.folder-wrapper {}
+
+.folder-children {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.folder-children.open {
+    opacity: 1;
+}
+
+/* Nesting indent */
+.folder-children .file-item {
+    padding-left: 44px;
+}
+.folder-children .folder-children .file-item {
+    padding-left: 68px;
+}
+.folder-children .folder-children .folder-children .file-item {
+    padding-left: 92px;
+}
+
+/* ============================================
+   Empty & Loading States
+   ============================================ */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    gap: 10px;
+    font-size: 14px;
+}
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+    gap: 10px;
+    font-size: 14px;
+}
+
+/* ============================================
+   jQuery UI Override: Dialog
+   ============================================ */
+.ui-dialog {
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    background: #fff;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+    margin: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    right: 16px;
+    top: 14px;
+    background: none;
+    border: none;
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon-closethick {
+    background: none;
+    text-indent: 0;
+    overflow: visible;
+    font-size: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close::after {
+    content: "×";
+    font-size: 20px;
+    color: #999;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ui-dialog .ui-dialog-titlebar-close:hover::after {
+    color: #333;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 20px;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    border: none;
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    background: #fafbfc;
+    margin: 0;
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: 0;
+}
+
+/* ============================================
+   Auth Pages
+   ============================================ */
+.page-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-shell {
+    width: 380px;
+    max-width: calc(100% - 32px);
+}
+
+.auth-panel {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    padding: 36px 32px 32px;
+}
+
+.auth-panel .auth-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.auth-panel .auth-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.auth-panel .auth-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.auth-form .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.auth-form .field-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.auth-form .field-group input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.auth-form .field-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(43,108,190,0.1);
+}
+
+.auth-error {
+    color: var(--danger);
+    font-size: 13px;
+    text-align: center;
+    padding: 8px 12px;
+    background: var(--danger-light);
+    border-radius: 4px;
+    display: none;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    font-weight: 600;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 860px) {
+    .workspace {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+    .file-table-header,
+    .file-item {
+        grid-template-columns: 1fr 70px 120px 100px;
+    }
+}
+
+@media (max-width: 560px) {
+    .file-table-header .fc-date,
+    .file-item .date-cell {
+        display: none;
+    }
+
+    .file-table-header,
+    .file-item {
+        grid-template-columns: 1fr 60px 80px;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+}

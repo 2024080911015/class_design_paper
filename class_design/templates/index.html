@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}文件管理{% endblock %}
+{% block body_class %}page-dashboard{% endblock %}
+
+{% block content %}
+<!-- Top Bar -->
+<header class="topbar">
+    <div class="topbar-left">
+        <span class="topbar-title">文件管理</span>
+    </div>
+    <div class="topbar-right">
+        <span class="current-user">{{ username }}</span>
+        <a class="logout-link" href="{{ url_for('logout') }}">退出</a>
+    </div>
+</header>
+
+<!-- Main Workspace: 两个部分 -->
+<div class="workspace">
+
+    <!-- ========== 第一部分：文件上传 ========== -->
+    <section class="panel panel-upload">
+        <div class="panel-header">
+            <h2>上传文件</h2>
+            <div id="uploadProgress" class="upload-progress" style="display:none;"></div>
+        </div>
+
+        <div id="uploadTabs">
+            <ul>
+                <li><a href="#tabSingle">单个文件</a></li>
+                <li><a href="#tabFolder">整个文件夹</a></li>
+            </ul>
+
+            <!-- 单文件上传 -->
+            <div id="tabSingle">
+                <form id="uploadForm" class="upload-form" method="post" enctype="multipart/form-data">
+                    <div class="upload-dropzone">
+                        <span class="dropzone-icon">+</span>
+                        <span class="dropzone-text">点击选择文件</span>
+                        <input id="singleFileInput" type="file" name="upload_file" required>
+                    </div>
+                    <p id="singleFileName" class="file-hint">尚未选择文件</p>
+                    <button id="singleUploadBtn" type="submit">上传文件</button>
+                </form>
+            </div>
+
+            <!-- 文件夹上传 -->
+            <div id="tabFolder">
+                <form id="uploadFolderForm" class="upload-form" method="post" enctype="multipart/form-data">
+                    <div class="upload-dropzone">
+                        <span class="dropzone-icon">+</span>
+                        <span class="dropzone-text">点击选择文件夹</span>
+                        <input id="folderInput" type="file" name="upload_folder" webkitdirectory directory multiple required>
+                    </div>
+                    <p id="folderFileName" class="file-hint">尚未选择文件夹</p>
+                    <button id="folderUploadBtn" type="submit">上传文件夹</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 第二部分：文件管理（下载 + 删除） ========== -->
+    <section class="panel panel-files">
+        <div class="panel-header">
+            <h2>文件列表</h2>
+            <div class="panel-header-actions">
+                <button id="refreshFiles">刷新</button>
+                <span class="file-count" id="fileCount"></span>
+            </div>
+        </div>
+
+        <div class="file-table-header">
+            <span class="fc-name">名称</span>
+            <span class="fc-size">大小</span>
+            <span class="fc-date">修改时间</span>
+            <span class="fc-actions">操作</span>
+        </div>
+        <div id="fileList" class="file-list-body" aria-live="polite"></div>
+    </section>
+
+</div>
+
+<!-- ========== jQuery UI Dialog：消息提示 ========== -->
+<div id="msgDialog" title="提示" style="display:none;">
+    <p id="msgText"></p>
+</div>
+
+<!-- ========== jQuery UI Dialog：确认删除 ========== -->
+<div id="deleteDialog" title="确认删除" style="display:none;">
+    <p id="deleteTargetText"></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/files.js') }}"></script>
+{% endblock %}

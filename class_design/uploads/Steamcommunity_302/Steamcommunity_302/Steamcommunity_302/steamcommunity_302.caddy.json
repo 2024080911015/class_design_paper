@@ -1,0 +1,2416 @@
+{
+#Export From SteamCommunity302
+admin off
+auto_https off
+    log {
+        exclude http.log.access
+		exclude http.handlers.reverse_proxy.health_checker.active
+    }
+}
+(PNA_CORS) {
+    @options {
+    method OPTIONS
+    }
+    respond @options 204
+    header {
+    Access-Control-Allow-Origin {http.request.header.Origin}
+    ###Access-Control-Allow-Credentials false
+    Access-Control-Allow-Methods *
+    Access-Control-Allow-Headers *
+    Access-Control-Allow-Private-Network true
+    Access-Control-Request-Private-Network true
+    defer
+    }
+}
+
+https://store.steampowered.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    @steamstreoapp {
+    path /app/*
+    path /agecheck/*
+    }
+    @steamstreofriends {
+	path /friends/*
+	path /api/addtowishlist
+	path /explore/followgame/*
+    }
+
+    reverse_proxy @steamstreoapp https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host store.steampowered.com
+    header_up User-Agent ".*" "$0 Googlebot/2.1 (+http://www.google.com/bot.html)"
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+
+    reverse_proxy @steamstreofriends https://str001.steam302.xyz https://str002.steam302.xyz https://str003.steam302.xyz {
+    header_up Host store.steampowered.com
+			transport http {
+			tls
+			tls_server_name statuspage.akamaized.net
+			#tls_insecure_skip_verify
+		}
+    }
+
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host store.steampowered.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://api.steampowered.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host api.steampowered.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://help.steampowered.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host help.steampowered.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://login.steampowered.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host login.steampowered.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+
+https://store.akamai.steamstatic.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host store.akamai.steamstatic.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://checkout.steampowered.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host checkout.steampowered.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+https://steamcommunity.com:50185 https://www.steamcommunity.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    @steamcommunityrp {
+    path /comment/*
+    path /forum/*
+    path *discussions*
+    path *tradingforum*
+    path *eventcomments*
+    path /chat/beginfileupload/*
+    }
+    @steamcommunitybypass {
+    path /id/*
+    path /profiles/*
+    }
+    reverse_proxy @steamcommunityrp https://str001.steam302.xyz https://str002.steam302.xyz https://str003.steam302.xyz https://str004.steam302.xyz {
+    header_up Host steamcommunity.com
+    header_up User-Agent ".*" "$0 Googlebot/2.1 (+http://www.google.com/bot.html)"
+    lb_policy random_choose 3
+    fail_duration 3s
+    max_fails 3
+    unhealthy_latency 1000ms
+    unhealthy_status 5xx
+    transport http {
+    tls
+    tls_server_name statuspage.akamaized.net
+    #tls_insecure_skip_verify
+    }
+}
+
+    reverse_proxy @steamcommunitybypass https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host steamcommunity.com
+    lb_try_duration 5s
+    lb_policy random_choose 4
+		transport http {
+			tls
+			tls_server_name steampipe.akamaized.net
+			#tls_insecure_skip_verify
+		}
+    }
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    header_up Host steamcommunity.com
+    header_up User-Agent ".*" "$0 Googlebot/2.1 (+http://www.google.com/bot.html)"
+    lb_try_duration 5s
+    lb_policy random_choose 4
+		transport http {
+			tls
+			tls_server_name steampipe.akamaized.net
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://steam-chat.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    header Access-Control-Allow-Origin https://steamloopback.host
+    @steamchatimg {
+    method POST
+    path /chat/beginfileupload/*
+    }
+
+    reverse_proxy @steamchatimg https://str001.steam302.xyz https://str002.steam302.xyz https://str003.steam302.xyz {
+    header_up Host {host}
+    lb_policy random_choose 2
+    fail_duration 3s
+    max_fails 3
+    unhealthy_latency 1000ms
+    unhealthy_status 5xx
+    transport http {
+    tls
+    tls_server_name statuspage.akamaized.net
+    #tls_insecure_skip_verify
+    }
+}
+
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls_server_name steampipe.akamaized.net
+    tls
+    }
+    header_up Host {host}
+    }
+}
+
+https://steamcloud-ugc.storage.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://storage.googleapis.com https://chromedriver.storage.googleapis.com https://216.58.200.240 https://172.217.160.80 https://172.217.160.112 https://172.217.25.208 https://34.64.4.16 {
+    lb_policy random_choose 3
+    fail_duration 3s
+    max_fails 3
+    unhealthy_latency 1000ms
+    unhealthy_status 5xx
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name "uploads"
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://store.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://store.cdn.queniuqe.com {
+    header_up Host store.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name store.cdn.queniuqe.com
+    }
+    }
+}
+
+https://media.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://media.cdn.queniuqe.com {
+    header_up Host media.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name media.cdn.queniuqe.com
+    }
+    }
+}
+
+https://avatars.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://avatars.cdn.queniuqe.com {
+    header_up Host avatars.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name avatars.cdn.queniuqe.com
+    }
+    }
+}
+
+https://clan.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://clan.cdn.queniuqe.com {
+    header_up Host clan.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name clan.cdn.queniuqe.com
+    }
+    }
+}
+
+https://video.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://video.cdn.queniuqe.com {
+    header_up Host video.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name video.cdn.queniuqe.com
+    }
+    }
+}
+
+https://shared.st.dl.eccdnx.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://shared.cdn.queniuqe.com {
+    header_up Host shared.cdn.queniuqe.com
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name shared.cdn.queniuqe.com
+    }
+    }
+}
+
+https://www.youtube.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    @notiframeapi {
+        not path /iframe_api
+        not path /iframe_api.js
+    }
+    #@bypasssteamdeck {
+    #    header_regexp Referer .*steamloopback.host
+    #}
+    #respond @bypasssteamdeck 200 {
+    #    close
+    #}
+    #reverse_proxy @notiframeapi https://youtube.com {
+    #transport http {
+	#tls
+	#tls_server_name www.youtube.com
+    #}
+    #header_up Host www.youtube.com
+    #}
+	file_server  /iframe_api*
+	respond @notiframeapi "该域名已被Steamcommunity 302 -> Steam创意工坊大图修复 功能占用,需正常访问请关闭对应功能后重启服务"
+}
+
+https://steambroadcastchat.akamaized.net:50185 https://steambroadcast.akamaized.net:50185 https://steamvideo-a.akamaihd.net:50185 https://steamstore-a.akamaihd.net:50185 https://steamusercontent-a.akamaihd.net:50185 https://steamcommunity-a.akamaihd.net:50185 https://steamcdn-a.akamaihd.net:50185 https://steamuserimages-a.akamaihd.net:50185 https://community.akamai.steamstatic.com:50185 https://avatars.akamai.steamstatic.com:50185 https://community.steamstatic.com:50185 https://cdn.akamai.steamstatic.com:50185 https://avatars.steamstatic.com:50185 https://shared.akamai.steamstatic.com:50185 https://clan.akamai.steamstatic.com:50185 https://video.akamai.steamstatic.com:50185 https://*.steamusercontent.com:50185 https://*.akamai.steamusercontent.com:50185 https://clan.steamstatic.com:50185 https://shared.steamstatic.com:50185 https://shared.akamai.steamstatic.com:50185 https://clan.akamai.steamstatic.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://cdn.cloudflare.steamstatic.com:50185 https://community.cloudflare.steamstatic.com:50185 https://store.cloudflare.steamstatic.com:50185 https://avatars.cloudflare.steamstatic.com:50185 https://shared.cloudflare.steamstatic.com:50185 https://clan.cloudflare.steamstatic.com:50185 https://video.cloudflare.steamstatic.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    header_up Host cloudflare akamai
+    }
+}
+
+https://cdn.fastly.steamstatic.com:50185 https://community.fastly.steamstatic.com:50185 https://store.fastly.steamstatic.com:50185 https://avatars.fastly.steamstatic.com:50185 https://shared.fastly.steamstatic.com:50185 https://clan.fastly.steamstatic.com:50185 https://video.fastly.steamstatic.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    header_up Host fastly akamai
+    }
+}
+
+https://steamcloud-eu-ams.storage.googleapis.com:50185 https://steamcloud-eu-fra.storage.googleapis.com:50185 https://steamcloud-finland.storage.googleapis.com:50185 https://steamcloud-saopaulo.storage.googleapis.com:50185 https://steamcloud-singapore.storage.googleapis.com:50185 https://steamcloud-sydney.storage.googleapis.com:50185 https://steamcloud-taiwan.storage.googleapis.com:50185 https://steamcloud-eu.storage.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://storage.googleapis.com https://chromedriver.storage.googleapis.com {
+	lb_policy random
+	lb_try_duration 5s
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name "uploads"
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://client-update.akamai.steamstatic.com:50185 https://client-update.steamstatic.com:50185 https://client-update.fastly.steamstatic.com:50185 https://cdn.steamstatic.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://s3.us-east-1.amazonaws.com:50185 https://*.s3.us-east-1.amazonaws.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://s3.dualstack.us-east-1.amazonaws.com {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name s3.dualstack.us-east-1.amazonaws.com
+    }
+    }
+}
+
+https://www.google.com:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    @recaptcha {
+    path /recaptcha/*
+    }
+	@other {
+	not path /recaptcha/*
+	}
+    reverse_proxy @recaptcha https://www.recaptcha.net {
+    transport http {
+	tls
+	tls_server_name www.recaptcha.net
+    }
+    header_up Host www.recaptcha.net
+}
+    #reverse_proxy https://google.com {
+    #transport http {
+	#tls
+	#tls_server_name www.google.com
+    #}
+    #header_up Host www.google.com
+    #}
+	respond @other "该域名已被Steamcommunity 302 -> Google 验证码 功能占用,需正常访问请关闭对应功能后重启服务"
+}
+
+
+https://discordapp.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://162.159.129.233 https://162.159.135.233 https://162.159.130.233 https://162.159.133.233 https://162.159.134.233 {
+		header_up host discordapp.com
+		lb_policy random_choose 3
+		fail_duration 3s
+		max_fails 3
+		unhealthy_latency 500ms
+		unhealthy_status 5xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+
+
+https://discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	@discordassets {
+	path /assets/*
+	}
+
+	reverse_proxy @discordassets https://dldsn1.steam302.xyz https://dldsn2.steam302.xyz https://dldsn3.steam302.xyz https://dldsn4.steam302.xyz https://dldsn5.steam302.xyz {
+		header_up Host {upstream_hostport}
+		lb_policy random
+		header_up -Cookie
+		header_down -Cookie
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+	}
+
+	reverse_proxy https://162.159.138.232 https://162.159.135.232 https://162.159.137.232 https://162.159.128.233 https://162.159.136.232 {
+		header_up Host discord.com
+		lb_policy first
+		lb_try_duration 5s
+		lb_retries 2
+		health_uri /cdn-cgi/trace
+		health_interval 120s
+		health_timeout 10s
+		health_status 4xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+https://updates.discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	reverse_proxy https://162.159.138.232 https://162.159.135.232 https://162.159.137.232 https://162.159.128.233 https://162.159.136.232 {
+		header_up Host updates.discord.com
+		lb_policy random_choose 3
+		fail_duration 3s
+		max_fails 3
+		unhealthy_latency 500ms
+		unhealthy_status 5xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+https://dl.discordapp.net:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://dlds.steam302.xyz {
+		header_up Host dlds.steam302.xyz
+		header_up -Cookie
+		header_down -Cookie
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+	}
+}
+
+https://dl2.discordapp.net:50185 https://*.dl2.discordapp.net:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://dlds2.steam302.xyz {
+		header_up Host {host}
+		header_up -Cookie
+		header_down -Cookie
+		transport http {
+			tls
+			tls_insecure_skip_verify
+			tls_server_name "update"
+		}
+	}
+}
+
+#https://blog.discord.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://blgds.steam302.xyz {
+#    transparent
+#    header_up Host blgds.steam302.xyz
+#    insecure_skip_verify
+#    }
+#}
+
+#https://medium.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://memds.steam302.xyz {
+#    transparent
+#    header_up Host memds.steam302.xyz
+#    insecure_skip_verify
+#    }
+#}
+
+https://*.discord.gg:50185 https://discord.gg:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://162.159.136.234 https://162.159.134.234 https://162.159.133.234 https://162.159.130.234 https://162.159.135.234 {
+		header_up Host {host}
+		transport http {
+			tls
+			#versions 1.3
+			tls_insecure_skip_verify
+			tls_server_name "dcgg"
+		}
+	}
+}
+
+https://media.discordapp.net:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	reverse_proxy https://162.159.133.232 https://162.159.134.232 https://162.159.129.232 https://162.159.130.232 https://162.159.128.232 {
+		header_up Host {host}
+		lb_policy random_choose 3
+		fail_duration 3s
+		max_fails 3
+		unhealthy_latency 500ms
+		unhealthy_status 5xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+https://images-ext-2.discordapp.net:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	redir https://media.discordapp.net{uri}
+}
+
+https://images-ext-1.discordapp.net:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	redir https://media.discordapp.net{uri}
+}
+
+#https://discordcdn.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://162.159.138.233 https://162.159.128.234 https://162.159.137.233 https://162.159.129.234 https://162.159.136.233 {
+#    transparent
+#    header_up Host {host}
+#    #insecure_skip_verify
+#    }
+#}
+
+#https://support.discordapp.com:50185 https://support.discord.com:50185 https://safety.discord.com:50185 https://support-dev.discord.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://104.16.53.111 https://104.16.51.111 {
+#    transparent
+#    header_up Host {host}
+#    insecure_skip_verify
+#    }
+#}
+
+https://support.discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://supportds.steam302.xyz {
+		header_up Host supportds.steam302.xyz
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+	}
+}
+
+https://safety.discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://safetyds.steam302.xyz {
+		header_up Host supportds.steam302.xyz
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+	}
+}
+
+https://support-dev.discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	reverse_proxy https://support-devds.steam302.xyz {
+		header_up Host support-devds.steam302.xyz
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+	}
+}
+
+https://status.discord.com:50185 https://streamkit.discord.com:50185 https://feedback.discord.com:50185 https://click.discord.com:50185 https://pax.discord.com:50185 https://printer.discord.com:50185 https://ptb.discord.com:50185 https://canary.discord.com:50185 https://bugs.discord.com:50185 https://i18n.discord.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	reverse_proxy https://162.159.135.232 https://162.159.136.232 https://162.159.137.232 https://162.159.138.232 https://162.159.128.233 {
+		header_up Host {host}
+		lb_policy random_choose 3
+		fail_duration 3s
+		max_fails 3
+		unhealthy_latency 500ms
+		unhealthy_status 5xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+https://url9177.discordapp.com:50185 https://canary-api.discordapp.com:50185 https://cdn-ptb.discordapp.com:50185 https://ptb.discordapp.com:50185 https://status.discordapp.com:50185 https://cdn-canary.discordapp.com:50185 https://cdn.discordapp.com:50185 https://streamkit.discordapp.com:50185 https://i18n.discordapp.com:50185 https://url9624.discordapp.com:50185 https://url7195.discordapp.com:50185 https://merch.discordapp.com:50185 https://printer.discordapp.com:50185 https://canary.discordapp.com:50185 https://apps.discordapp.com:50185 https://pax.discordapp.com:50185 {
+	tls steamcommunity.crt steamcommunity.key
+	import PNA_CORS
+	reverse_proxy https://162.159.133.233 https://162.159.129.233 https://162.159.130.233 https://162.159.134.233 https://162.159.135.233 {
+		header_up Host {host}
+		lb_policy random_choose 3
+		fail_duration 3s
+		max_fails 3
+		unhealthy_latency 1000ms
+		unhealthy_status 5xx
+		transport http {
+			tls
+			tls_insecure_skip_verify
+		}
+	}
+}
+
+https://discord-attachments-uploads-prd.storage.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://storage.googleapis.com https://steamcloud-ugc.storage.googleapis.com https://steamcloud-singapore.storage.googleapis.com https://steamcloud-taiwan.storage.googleapis.com https://chromedriver.storage.googleapis.com https://mongodb.storage.googleapis.com {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name "uploads"
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://twitch.tv:50185 https://www.twitch.tv:50185 https://m.twitch.tv:50185 https://app.twitch.tv:50185 https://clips.twitch.tv:50185 https://gql.twitch.tv:50185 https://dashboard.twitch.tv:50185 https://appeals.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://twitch.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://*.pdx01.abs.hls.ttvnw.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://science-edge-external-prod-73889260.us-west-2.elb.amazonaws.com {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    #tls_server_name {host}
+    }
+    }
+}
+
+https://irc-ws.chat.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://5a895ed07aed1b254ee21cd78958ae0b.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    }
+}
+
+https://irc-ws-r.chat.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://065f67277ae87878fffaa60519b3ee5c.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    }
+}
+
+https://vod-storyboards.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://dlifex0fg7ru9.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://vod-metro.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://d8t045al7vai0.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+
+https://music.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://d12b3e89c9703p.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://player.m7g.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://dnjmu7cm5xw9w.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://blog.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://d1x43om3304ey9.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://inspector.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://fb96613da2b5475079b93f4be2e94cd3.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://dev.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://d205b01qzi0xib.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+
+
+https://spade.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://science-edge-external-prod-73889260.us-west-2.elb.amazonaws.com {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+
+
+https://vod-secure.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://ds0h3roq6wcgc.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+
+https://trowel.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://science-edge-external-prod-73889260.us-west-2.elb.amazonaws.com {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://extension-files.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d36mepituis1gg.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host extension-files.twitch.tv
+    }
+}
+
+
+https://help.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://origin-a.akamaihd.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://brand.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://d2g064yykcu7rs.cloudfront.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://assets.help.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://ashelpttv.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host ashelpttv.steam302.xyz
+    }
+}
+
+https://assets.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://asttv.steam302.xyz {
+    reverse_proxy https://static.twitchcdn.net {
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    header_up Host static.twitchcdn.net
+    }
+}
+
+https://passport.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://passttv.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host passttv.steam302.xyz
+    }
+}
+
+https://id.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://2973c6ca0e111662ed293b57dbae9fbf.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    header_up Host {host}
+    }
+}
+
+#notwork
+#https://link.twitch.tv:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://985a89155dd090eacda1b82388e334ed.steam302.xyz {
+#    transparent
+#    header_up Host {host}
+#    insecure_skip_verify
+#    }
+#}
+
+
+https://id-cdn.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://idcdnttv.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host idcdnttv.steam302.xyz
+    }
+}
+
+https://player.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://twitch.map.fastly.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://api.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d2mb634i1sflda.cloudfront.net {
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://cvp.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://e9221.i.akamaiedge.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+#notwork
+#https://clips-media-assets2.twitch.tv:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://d2xmjdvx03ij56.cloudfront.net {
+#    transparent
+#    header_up Host {host}
+#    insecure_skip_verify
+#    }
+#}
+
+
+#notwork
+#https://assets.help.twitch.tv:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    reverse_proxy https://6d859be7aa0440f65c8a940ef5218337.steam302.xyz {
+#    transparent
+#    header_up Host {host}
+#    insecure_skip_verify
+#    }
+#}
+
+https://discuss.dev.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://522c432cc10e237a02fa1d6481d7d247.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    header_up Host {host}
+    }
+}
+
+https://safety.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://accessibility.acapqa.net {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://ingest.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://b3d696173d52b66e1caab6145cb5058b.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    header_up Host {host}
+    }
+}
+
+
+https://pubsub-edge.twitch.tv:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://890c88446f94f25bd32a3f1e0df6c120.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name "ttv"
+    }
+    }
+}
+
+https://usher.ttvnw.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://634d6519809b2734de8cc8aa317c7f28.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name usher.ttvnw.net
+    }
+    header_up Host {host}
+    }
+}
+
+https://mod.io:50185 https://*.mod.io:50185 https://*.old.mod.io:50185 {
+tls steamcommunity.crt steamcommunity.key
+@modi302 {
+path *
+}
+    rewrite @modi302 /302{host}{uri}
+    reverse_proxy https://m0di0.steam302.xyz {
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    header_up Host m0di0.steam302.xyz
+    }
+}
+
+https://binary.lge.modcdn.io:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://binary.modcdn.io {
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    header_up Host binary.modcdn.io
+    }
+}
+
+https://redstone-launcher.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://mclsecurelauncher.azureedge.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+
+https://www.minecraft.net:50185 https://help.minecraft.net:50185 https://account.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+			tls_server_name steampipe.akamaized.net
+		}
+    }
+}
+
+https://launcher.mojang.com:50185 https://piston-data.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://launcher-cdn.azureedge.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://launchermeta.mojang.com:50185 https://piston-meta.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://launcher-meta-cdn.azureedge.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://launchercontent.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://launchercontent.azureedge.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+
+https://pocket.realms.minecraft.net:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://bedrock.frontendlegacy.realms.minecraft-services.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://pc.realms.minecraft.net:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://java.frontendlegacy.realms.minecraft-services.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://payments.realms.minecraft.net:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://payments.realms.minecraft-services.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+
+
+https://api.minecraftservices.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://minecraftapi-bef7bxczg0amd8ef.z01.azurefd.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+https://sessionserver.mojang.com:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://sessionserver-d5hmddgyhza3g3e5.z01.azurefd.net {
+    header_up Host {host}
+		transport http {
+			tls
+			#tls_insecure_skip_verify
+		}
+    }
+}
+
+http://textures.minecraft.net:49375 {
+    reverse_proxy https://minecraftapi-bef7bxczg0amd8ef.z01.azurefd.net {
+    header_up Host {host}
+		transport http {
+			tls
+			tls_insecure_skip_verify
+			#tls_server_name "mc"
+		}
+    }
+}
+
+https://*.mojang.com:50185 https://*.minecraft.net:50185 https://*.minecraftservices.com:50185 https://*.download.minecraft.net:50185 {
+    tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://minecraftapi-bef7bxczg0amd8ef.z01.azurefd.net {
+    header_up Host {host}
+		transport http {
+			tls
+			tls_insecure_skip_verify
+			#tls_server_name "mc"
+		}
+    }
+}
+
+https://github.com:50185 https://www.github.com:50185 https://gist.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://20.205.243.166 https://20.207.73.82 https://20.27.177.113 https://20.233.83.145 {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://api.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+
+    reverse_proxy https://1.ghapi.steam302.xyz https://2.ghapi.steam302.xyz https://3.ghapi.steam302.xyz https://4.ghapi.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://codeload.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+
+    reverse_proxy https://1.ghcodel.steam302.xyz https://2.ghcodel.steam302.xyz https://3.ghcodel.steam302.xyz https://4.ghcodel.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://support.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+
+    reverse_proxy https://1.ghsp.steam302.xyz https://2.ghsp.steam302.xyz https://3.ghsp.steam302.xyz https://4.ghsp.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 1000ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+
+https://raw.githubusercontent.com:50185 https://raw.github.com:50185 https://camo.githubusercontent.com:50185 https://cloud.githubusercontent.com:50185 https://avatars.githubusercontent.com:50185 https://avatars0.githubusercontent.com:50185 https://avatars1.githubusercontent.com:50185 https://avatars2.githubusercontent.com:50185 https://avatars3.githubusercontent.com:50185 https://user-images.githubusercontent.com:50185 https://private-user-images.githubusercontent.com:50185 https://github-releases.githubusercontent.com:50185 https://analytics.githubassets.com:50185 https://desktop.githubusercontent.com:50185 https://lab.github.com:50185 https://www.github.io:50185 https://*.github.io:50185 https://pages.github.com:50185 https://resources.github.com:50185 https://developer.github.com:50185 https://partner.github.com:50185 https://desktop.github.com:50185 https://guides.github.com:50185 https://objects.githubusercontent.com:50185 https://media.githubusercontent.com:50185 https://release-assets.githubusercontent.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://1.ghcontent.steam302.xyz https://2.ghcontent.steam302.xyz https://3.ghcontent.steam302.xyz https://4.ghcontent.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+
+
+https://github.githubassets.com:50185 https://docs.github.com:50185 https://support-assets.githubassets.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://1.ghassets.steam302.xyz https://2.ghassets.steam302.xyz https://3.ghassets.steam302.xyz https://4.ghassets.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://copilot.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://1.ghcl.steam302.xyz https://2.ghcl.steam302.xyz https://3.ghcl.steam302.xyz https://4.ghcl.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://services.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://1.ghsvc.steam302.xyz https://2.ghsvc.steam302.xyz https://3.ghsvc.steam302.xyz https://4.ghsvc.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://education.github.com:50185 https://enterprise.github.com:50185 https://classroom.github.com:50185 https://central.github.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+
+    reverse_proxy https://1.ghedu.steam302.xyz https://2.ghedu.steam302.xyz https://3.ghedu.steam302.xyz https://4.ghedu.steam302.xyz {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://viewscreen.githubusercontent.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://140.82.112.21 https://140.82.112.22 https://140.82.114.22 https://140.82.113.21 https://140.82.113.22 https://140.82.114.21 {
+	lb_policy random_choose 3
+	fail_duration 3s
+	max_fails 3
+	unhealthy_latency 500ms
+	unhealthy_status 5xx
+    transport http {
+    tls
+    tls_insecure_skip_verify
+	tls_server_name "Github"
+    }
+    header_up Host {host}
+    }
+}
+
+https://*.vercel.app:50185 https://vercel.app:50185 https://vercel.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://cname.vercel-dns.com {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name cname.vercel-dns.com
+    }
+    }
+}
+
+https://huggingface.co:50185 https://www.huggingface.co:50185 https://datasets-server.huggingface.co:50185 https://cdn-thumbnails.huggingface.co:50185 https://transformer.huggingface.co:50185 https://transformers.huggingface.co:50185 https://cdn-media.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3q5pwvs88w1av.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-avatars.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3q5pwvs88w1av.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-lfs-us-1.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3tt2suyqs9zqv.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-uploads.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d1cylya5vv74ss.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-lfs-eu-1.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d1wmdo6fswuln8.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://convai.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d1cnjqbqjby1vq.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-lfs.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d2243ylfu57tc6.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d2ws9o8vfrpkyk.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://cdn-datasets.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d36easquyfvmrn.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+#https://bigscience.huggingface.co:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    import PNA_CORS
+#    reverse_proxy https://proxy-ssl.webflow.com {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#    #tls_insecure_skip_verify
+#    }
+#    }
+#}
+
+https://discuss.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://hellohellohello.hosted-by-discourse.com {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://status.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://statuspage.betteruptime.com {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://ui.endpoints.huggingface.co:50185 https://store.huggingface.co:50185 https://dell.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://cname.vercel-dns.com {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://neuralconvo.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3bh913krp35a5.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://home.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://hugging-face.customdomains.okta.com {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://api-inference.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    redir https://huggingface.co/docs/api-inference/index
+}
+
+https://thumbnails.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3q5pwvs88w1av.cloudfront.net {
+    header_up Host cdn-thumbnails.huggingface.co
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://ui.autotrain.huggingface.co:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    redir https://huggingface.co/autotrain
+}
+
+
+https://artstation.com:50185 https://*.artstation.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://104.19.169.40 https://104.19.170.40 {
+    lb_policy random_choose 2
+    fail_duration 3s
+    max_fails 3
+    unhealthy_latency 1000ms
+    unhealthy_status 5xx
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://business.pinterest.com:50185 https://creators.pinterest.com:50185 https://career.pinterest.com:50185 https://curate.pinterest.com:50185 https://partners.pinterest.com:50185 https://try.pinterest.com:50185 https://teens.pinterest.com:50185 https://teen.pinterest.com:50185 https://r.pinterest.com:50185 https://pinfluencers.pinterest.com:50185 https://mqtt.pinterest.com:50185 https://prod-about.pinterest.com:50185 https://codeofconduct.pinterest.com:50185 https://create.pinterest.com:50185 https://trk.pinterest.com:50185 https://trk-v4.pinterest.com:50185 https://trk2.pinterest.com:50185 https://publishers.pinterest.com:50185 https://adminapp.pinterest.com:50185 https://community.pinterest.com:50185 https://curators.pinterest.com:50185 https://developer.pinterest.com:50185 https://toronto.pinterest.com:50185 https://investor.pinterest.com:50185 https://prod-brand.pinterest.com:50185 https://app.pinterest.com:50185 https://positivity.pinterest.com:50185 https://brand.pinterest.com:50185 https://help.pinterest.com:50185 https://developers.pinterest.com:50185 https://policy.pinterest.com:50185 https://blog.pinterest.com:50185 https://newsroom.pinterest.com:50185 https://about.pinterest.com:50185 https://engineering.pinterest.com:50185 https://careers.pinterest.com:50185 https://trends.pinterest.com:50185 https://media-cache-ec0.pinterest.com:50185 https://twotwenty.pinterest.com:50185 https://log.pinterest.com:50185 https://media-cache-ec1.pinterest.com:50185 https://post.pinterest.com:50185 https://labs.pinterest.com:50185 https://wellbeing.pinterest.com:50185 https://widgets.pinterest.com:50185 https://thepoint.pinterest.com:50185 https://catalogs.pinterest.com:50185 https://partners-api.pinterest.com:50185 https://dev.pinterest.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://pinterest.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://pinterest.com:50185 https://*.pinterest.com:50185 https://pinimg.com:50185 https://*.pinimg.com:50185 https://pinterest.info:50185 https://*.pinterest.info:50185 https://pinterest.jp:50185 https://*.pinterest.jp:50185 https://pinterest.info:50185 https://pinterest.kr:50185 https://*.pinterest.kr:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://www.blockbench.net:50185 https://blockbench.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://www.netlify.com {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://web.blockbench.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://ghps.steam302.xyz {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host {host}
+    }
+}
+
+https://*.wikia.nocookie.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://images.wikia.com {
+    #https://static.wikia.com
+    lb_policy random
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host images.wikia.com
+    }
+}
+
+https://imgur.com:50185 https://*.imgur.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://imgur.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://mega.io:50185 https://*.mega.io:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://megaio.steam302.xyz {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name mega.co.nz
+    }
+    }
+}
+
+https://mega.nz:50185 https://*.mega.nz:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://meganz.steam302.xyz {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name mega.co.nz
+    }
+    }
+}
+
+
+https://*.api.mega.co.nz:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://megaconzapi.steam302.xyz {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name megaconzapi
+    }
+    }
+}
+
+https://onedrive.live.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://13.107.42.13 {
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host onedrive.live.com
+    }
+}
+https://skyapi.onedrive.live.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://131.253.14.227 https://131.253.14.229 https://40.90.136.179 https://13.105.28.48 https://40.90.136.180 https://157.55.109.228 https://40.90.136.163 https://131.253.14.230 https://40.90.128.17 https://40.90.142.226 https://13.105.28.32 https://104.44.88.24 https://40.90.133.97 https://13.104.208.162 https://157.55.109.230 https://13.104.208.160 https://13.105.28.1 https://104.44.88.28 https://157.55.109.232 https://40.90.133.112 https://40.79.207.82 https://40.90.136.20 {
+    lb_policy random_choose 10
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    header_up Host skyapi.onedrive.live.com
+    }
+}
+
+https://cdn.jsdelivr.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://jsdelivr.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://ajax.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://ajax.proxy.ustclug.org {
+	lb_policy random
+	lb_try_duration 5s
+    header_up Host ajax.proxy.ustclug.org 
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://greasyfork.org:50185 https://*.greasyfork.org:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://50.116.4.196 https://96.126.98.220 https://[2600:3c01::f03c:95ff:fe58:20d3] https://[2600:3c01::f03c:95ff:fee3:1156] {
+    header_up Host {host}
+    transport http {
+    tls
+	tls_insecure_skip_verify
+    tls_server_name "GF"
+    }
+    }
+}
+
+https://hub.docker.com:50185 https://registry.hub.docker.com:50185 https://store.docker.com:50185 https://cloud.docker.com:50185 https://id.docker.com:50185 https://scout.docker.com:50185 https://trial.docker.com:50185 https://admin.docker.com:50185 https://copilot-agent.docker.com:50185 https://docs.docker.io:50185 https://docker.io:50185 https://www.docker.io:50185 https://index.docker.io:50185 https://registry.docker.io:50185 https://registry-1.docker.io:50185 https://blog.docker.io:50185 https://notary.docker.io:50185 https://get.docker.io:50185 https://auth.docker.io:50185 https://test.docker.io:50185 https://status.docker.io:50185 https://jobs.docker.io:50185 https://cdn-registry-1.docker.io:50185 https://registry-origin.docker.io:50185 https://app.docker.com:50185 https://sessions-bugsnag.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://elb-default.us-east-1.aws.dckr.io https://elb-io.us-east-1.aws.dckr.io {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://docs.docker.com:50185 https://blog.docker.com:50185 https://engineering.docker.com:50185 https://events.docker.com:50185 https://desktop.docker.com:50185 https://contribute.docker.com:50185 https://beta.docker.com:50185 https://goto.docker.com:50185 https://community.docker.com:50185 https://open.docker.com:50185 https://birthday.docker.com:50185 https://download.docker.com:50185 https://editions.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d2h67oheeuigaw.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://status.docker.com:50185 https://get.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://d3cxuo8f8w64ms.cloudfront.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+https://production.cloudflare.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://104.16.101.215 https://104.16.99.215 https://104.16.98.215 https://104.16.100.215 https://104.16.97.215 {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://login.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://127.0.0.1:17727 {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name {host}
+    }
+    }
+}
+
+https://email.notify.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://mailgun.org {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://preferences.docker.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://docker.datagrail.io {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    }
+    }
+}
+
+https://translate.google.com:50185 https://translate.googleapis.com:50185 https://translate-pa.googleapis.com:50185 https://translation.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://gt01.steam302.xyz https://gt02.steam302.xyz https://gt03.steam302.xyz https://gt04.steam302.xyz https://gt05.steam302.xyz https://gt06.steam302.xyz https://gt07.steam302.xyz https://gt08.steam302.xyz https://gt09.steam302.xyz https://gt10.steam302.xyz {
+    header_up Host {host}
+	health_headers {
+			Full-Upstream {http.reverse_proxy.active.target_upstream}
+			host translate.google.cn
+		}
+
+        lb_policy       random
+        lb_try_duration 5s
+        lb_try_interval 250ms
+
+        health_uri      /
+        health_status   200
+        health_interval 30s
+        health_timeout  3s
+
+        max_fails       2
+        fail_duration   1m
+
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name translate.google.cn
+    }
+    }
+}
+
+https://scholar.google.com:50185 https://scholar.googleusercontent.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://gs01.steam302.xyz https://gs02.steam302.xyz https://gs03.steam302.xyz https://gs04.steam302.xyz https://gs05.steam302.xyz https://gs06.steam302.xyz https://gs07.steam302.xyz https://gs08.steam302.xyz https://gs09.steam302.xyz https://gs10.steam302.xyz {
+    header_up Host {host}
+	health_headers {
+			Full-Upstream {http.reverse_proxy.active.target_upstream}
+			host scholar.google.cn
+		}
+
+        lb_policy       random
+        lb_try_duration 5s
+        lb_try_interval 250ms
+
+        health_uri      /
+        health_status   404
+        health_interval 30s
+        health_timeout  3s
+
+        max_fails       2
+        fail_duration   1m
+
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name scholar.google.cn
+    }
+    }
+}
+
+
+https://parsec.app:50185 https://*.parsec.app:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://parsec.app.cdn.cloudflare.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name {host}
+    }
+    }
+}
+
+https://gamespot.com:50185 https://*.gamespot.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://mbz200.wikia.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name mbz200.wikia.map.fastly.net
+    }
+    }
+}
+
+https://disk.yandex.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://disk.yandex.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name disk.yandex.net
+    }
+    }
+}
+
+https://api.disk.yandex.com:50185 https://cloud-api.yandex.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://api.disk.yandex.net {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name api.disk.yandex.net
+    }
+    }
+}
+
+https://m.disk.yandex.com:50185 https://www.disk.yandex.com:50185 https://beta.disk.yandex.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://any.yandex.ru {
+    header_up Host {host}
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name any.yandex.ru
+    }
+    }
+}
+
+https://downloader.disk.yandex.com:50185 https://*.downloader.disk.yandex.com:50185 https://downloader.disk.yandex.ru:50185 https://*.downloader.disk.yandex.ru:50185 https://downloader.disk.yandex.net:50185 https://*.downloader.disk.yandex.net:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://77.88.21.127 {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    #tls_server_name any.yandex.ru
+    }
+    }
+}
+
+#https://open.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://atc.spotify.map.fastly.net {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    }
+#    }
+#}
+
+#https://dealer.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://35.186.224.45 {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    #tls_server_name canary-certificate-for-noop.spotify.com
+#    }
+#    }
+#}
+
+
+#https://guc3-dealer.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://35.186.224.46 {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    #tls_server_name canary-certificate-for-noop.spotify.com
+#    }
+#    }
+#}
+
+#https://gae2-dealer.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://35.186.224.40 {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    #tls_server_name canary-certificate-for-noop.spotify.com
+#    }
+#    }
+#}
+
+#https://gue1-dealer.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://35.186.224.30 {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    #tls_server_name canary-certificate-for-noop.spotify.com
+#    }
+#    }
+#}
+
+#https://gew1-dealer.spotify.com:50185 {
+#tls steamcommunity.crt steamcommunity.key
+#    #import PNA_CORS
+#    reverse_proxy https://35.186.224.41 {
+#    header_up Host {host}
+#    transport http {
+#    tls
+#	tls_insecure_skip_verify
+#    #tls_server_name canary-certificate-for-noop.spotify.com
+#    }
+#    }
+#}
+
+
+https://gae2-spclient.spotify.com:50185 https://guc3-spclient.spotify.com:50185 https://gue1-spclient.spotify.com:50185 https://gew1-spclient.spotify.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    #import PNA_CORS
+    reverse_proxy https://35.186.224.22 https://35.186.224.31 https://35.186.224.9 https://35.186.224.26 {
+    header_up Host {host}
+	lb_policy random
+	lb_try_duration 5s
+    transport http {
+    tls
+	tls_insecure_skip_verify
+    #tls_server_name canary-certificate-for-noop.spotify.com
+    }
+    }
+}
+
+
+https://api-partner.spotify.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    #import PNA_CORS
+    reverse_proxy https://35.186.224.8 https://35.186.224.9 https://35.186.224.2 https://35.186.224.3 https://35.186.224.24 https://35.186.224.25 https://35.186.224.26 https://35.186.224.27 https://35.186.224.20 https://35.186.224.21 https://35.186.224.22 https://35.186.224.23 https://35.186.224.28 https://35.186.224.29 https://35.186.224.31 https://35.186.224.19 https://35.186.224.18 https://35.186.224.15 https://35.186.224.14 https://35.186.224.17 https://35.186.224.16 https://35.186.224.11 https://35.186.224.13 https://35.186.224.12 {
+    header_up Host {host}
+	header_down -content-security-policy
+	lb_policy random
+	lb_try_duration 5s
+    transport http {
+    tls
+    tls_server_name canary-certificate-for-noop.spotify.com
+    }
+    }
+}
+
+https://spotify.com:50185 https://*.spotify.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    #import PNA_CORS
+    reverse_proxy https://35.186.224.8 https://35.186.224.9 https://35.186.224.2 https://35.186.224.3 https://35.186.224.25 https://35.186.224.26 https://35.186.224.27 https://35.186.224.20 https://35.186.224.21 https://35.186.224.22 https://35.186.224.23 https://35.186.224.28 https://35.186.224.29 https://35.186.224.31 https://35.186.224.19 https://35.186.224.18 https://35.186.224.15 https://35.186.224.14 https://35.186.224.17 https://35.186.224.16 https://35.186.224.11 https://35.186.224.13 https://35.186.224.12 {
+    header_up Host {host}
+	header_down -content-security-policy
+	lb_policy random
+	lb_try_duration 5s
+    transport http {
+    tls
+    tls_server_name canary-certificate-for-noop.spotify.com
+    }
+    }
+}
+
+#https://audio-fa.spotifycdn.com:50185 https://audio-fa-l.spotifycdn.com:50185 https://audio-fa-http2.spotifycdn.com:50185 https://audio-fa-otf.spotifycdn.com:50185 https://audio-fa-del-277.spotifycdn.com:50185 https://audio-fa-quic0.spotifycdn.com:50185 https://audio-fa-quic.spotifycdn.com:50185 https://audio-fa-cronet.spotifycdn.com:50185 https://audio-fa-del-272.spotifycdn.com:50185 https://audio-fa-del-574.spotifycdn.com:50185 https://audio-fa-tls13.spotifycdn.com:50185 https://audio-fa-tls130.spotifycdn.com:50185 https://mqf-audio-fa.spotifycdn.com:50185 https://audio-fa.scdn.co:50185 https://challenge.spotifycdn.com:50185 https://audio-ak.spotifycdn.com https://mqf-audio-ak.spotifycdn.com:50185 https://audio-ak-l.spotifycdn.com:50185 https://audio-ak-del-574.spotifycdn.com:50185 https://audio-ak-quic.spotifycdn.com:50185 https://audio-akp.spotifycdn.com:50185 https://video-akpcw-cdn-spotify-com.akamaized.net:50185 https://audio4-aki-spotify-com.akamaized.net:50185 https://audio4-akp-spotify-com.akamaized.net:50185 https://audio-aki-spotify-com.akamaized.net:50185 https://heads-akp-bbr-spotify-com.akamaized.net:50185 https://heads4-ak-spotify-com.akamaized.net:50185 https://heads-ak-spotify-com.akamaized.net:50185 https://audio-akp-spotify-com.akamaized.net:50185 https://heads4-akp-spotify-com.akamaized.net:50185 https://heads-akp-spotify-com.akamaized.net:50185 https://test-video-ak-cdn-spotify-com.akamaized.net:50185 https://audio-akp-quic-spotify-com.akamaized.net:50185 https://video-akp-cdn-spotify-com.akamaized.net:50185 https://audio-noeip-l-spotify-com.akamaized.net:50185 https://video-ak-cdn-spotify-com.akamaized.net:50185 https://audio-ak-spotify-com.akamaized.net:50185 https://heads-noeip-spotify-com.akamaized.net:50185 https://audio-akp-quic-control-spotify-com.akamaized.net:50185 https://audio-akp-bbr-spotify-com.akamaized.net:50185 https://heads-ak-kr-spotify-com.akamaized.net:50185 https://audio4-ak-spotify-com.akamaized.net:50185 https://audio-ak-l-spotify-com.akamaized.net:50185 {
+##tls self_signed
+#tls steamcommunity.crt steamcommunity.key
+#    # default/catchall
+#    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+#    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+#    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+#    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+#    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+#    lb_try_duration 5s
+#    lb_policy random_choose 4
+#    header_up Host {host}
+#    transport http {
+#    tls
+#    tls_server_name steampipe.akamaized.net
+#    #tls_insecure_skip_verify
+#    }
+#    }
+#}
+
+https://i.scdn.co:50185 https://encore.scdn.co:50185 https://thisis-images.scdn.co:50185 https://seeded-session-images.scdn.co:50185 https://charts-images.scdn.co:50185 https://lineup-images.scdn.co:50185 https://sdk.scdn.co:50185 https://www-growth.scdn.co:50185 https://wwwmarketing.scdn.co:50185 https://ccra.scdn.co:50185 https://ff-images.scdn.co:50185 https://mrkt-web.scdn.co:50185 https://audio-understanding-dev.scdn.co:50185 https://go.scdn.co:50185 https://shareables.scdn.co:50185 https://campaigns-test.scdn.co:50185 https://nftonboarding-images.scdn.co:50185 https://s4a-img.scdn.co:50185 https://misc.scdn.co:50185 https://stl-img.scdn.co:50185 https://crema-assets.scdn.co:50185 https://canvaz.scdn.co:50185 https://vocal-removal.scdn.co:50185 https://uplink.scdn.co:50185 https://signin-images.scdn.co:50185 https://support.scdn.co:50185 https://creativeservice-production.scdn.co:50185 https://bollywood-mix-images.scdn.co:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+    # default/catchall
+    reverse_proxy https://steamuserimages-a.akamaihd.net.edgesuite.net https://steamstore-a.akamaihd.net.edgesuite.net https://eaassets-a.akamaihd.net.edgesuite.net https://steamcommunity-a.akamaihd.net.edgesuite.net {
+    dynamic a steamuserimages-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamstore-a.akamaihd.net.edgesuite.net 443
+    dynamic a eaassets-a.akamaihd.net.edgesuite.net 443
+    dynamic a steamcommunity-a.akamaihd.net.edgesuite.net 443
+    lb_try_duration 5s
+    lb_policy random_choose 4
+    header_up Host {host}
+    transport http {
+    tls
+    tls_server_name steampipe.akamaized.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+
+https://p.scdn.co:50185 https://mosaic.scdn.co:50185 https://daily-mix.scdn.co:50185 https://dailymix-images.scdn.co:50185 https://newjams-images.scdn.co:50185 https://download.scdn.co:50185 https://o.scdn.co:50185 https://lite-images-i.scdn.co:50185 https://pstorage-gew-06.scdn.co:50185 https://message-editor.scdn.co:50185 https://live-tile-images.scdn.co:50185 https://pstorage-guc-05.scdn.co:50185 https://pstorage.scdn.co:50185 https://accounts.scdn.co:50185 https://pstorage-gae-08.scdn.co:50185 https://content.scdn.co:50185 https://pstorage-gae-09.scdn.co:50185 https://pstorage-guc-03.scdn.co:50185 https://t.scdn.co:50185 https://pstorage-gew-08.scdn.co:50185 https://mosaic-2.scdn.co:50185 https://tv.scdn.co:50185 https://pstorage-gae-10.scdn.co:50185 https://pstorage-guc-01.scdn.co:50185 https://s4a.scdn.co:50185 https://pstorage-guc-08.scdn.co:50185 https://pstorage-gew-05.scdn.co:50185 https://pstorage-guc-09.scdn.co:50185 https://pstorage-gae-04.scdn.co:50185 https://heads-fab.scdn.co:50185 https://tv-static.scdn.co:50185 https://audio4-fa.scdn.co:50185 https://pstorage-guc-04.scdn.co:50185 https://i-lo.scdn.co:50185 https://pstorage-gew-07.scdn.co:50185 https://pstorage-gew-03.scdn.co:50185 https://www.scdn.co:50185 https://pstorage-gae-03.scdn.co:50185 https://pstorage-gew-04.scdn.co:50185 https://pstorage-gae-05.scdn.co:50185 https://adstudio.scdn.co:50185 https://quicksilver.scdn.co:50185 https://shipit-ctrl.scdn.co:50185 https://pstorage-guc-07.scdn.co:50185 https://shipit-pckg.scdn.co:50185 https://video-fa.scdn.co:50185 https://pstorage-guc-06.scdn.co:50185 https://tv-dev.scdn.co:50185 https://tv-prod.scdn.co:50185 https://merch-img.scdn.co:50185 https://adstudio-assets.scdn.co:50185 https://lite-images-i-2.scdn.co:50185 https://tv-staging.scdn.co:50185 https://scannables.scdn.co:50185 https://pstorage-gae-01.scdn.co:50185 https://cast.scdn.co:50185 https://i2o.scdn.co:50185 https://pstorage-gew-10.scdn.co:50185 https://upgrade.scdn.co:50185 https://pstorage-guc-10.scdn.co:50185 https://seektables.scdn.co:50185 https://shipit-pass.scdn.co:50185 https://pstorage-gew-01.scdn.co:50185 https://pstorage-guc-02.scdn.co:50185 https://pstorage-gae-02.scdn.co:50185 https://pstorage-gae-06.scdn.co:50185 https://pstorage-gew-09.scdn.co:50185 https://spritemaps.scdn.co:50185 https://pstorage-gew-02.scdn.co:50185 https://heads-fa.scdn.co:50185 https://pstorage-gae-07.scdn.co:50185  {
+tls steamcommunity.crt steamcommunity.key
+    #import PNA_CORS
+    reverse_proxy https://scdnco.spotify.map.fastly.net {
+    header_up Host {host}
+    transport http {
+    tls
+	tls_insecure_skip_verify
+    }
+    }
+}
+
+
+http://ap-southeast-2-prod-prodpc01-reg-httpping.p76prod.systems:49375 http://eu-central-1-prod-prodpc01-reg-httpping.p76prod.systems:49375 http://eu-west-1-prod-prodpc01-reg-httpping.p76prod.systems:49375 http://us-east-1-prod-prodpc01-reg-httpping.p76prod.systems:49375 {
+    respond 200
+}
+
+http://download.epicgames.com:49375 http://download2.epicgames.com:49375 http://download3.epicgames.com:49375 http://download4.epicgames.com:49375 http://epicgames-download1.akamaized.net:49375 http://fastly-download.epicgames.com:49375 {
+    redir http://epicgames-download1-1251447533.file.myqcloud.com{uri} permanent
+}
+
+http://uplaypc-s-ubisoft.cdn.ubi.com:49375 http://uplaypc-s-ubisoft-ww.cdn.ubi.com:49375 {
+    redir http://uplaypc-s-ubisoft.cdn.ubionline.com.cn{uri} permanent
+}
+
+http://assets1.xboxlive.com:49375 http://assets2.xboxlive.com:49375 http://xvcf1.xboxlive.com:49375 http://xvcf2.xboxlive.com:49375 {
+    redir http://assets1.xboxlive.cn{uri} permanent
+}
+
+http://replay.csgo.com.cn:49375 {
+	@demo path_regexp demo ^/([0-9]+)/(.+)$
+	redir @demo http://replay{re.demo.1}.valve.net/730/{re.demo.2} 302
+	
+    reverse_proxy http://gtm-cn-m7r1wt3sn1r.steamchina.com {
+    header_up Host {host}
+	}
+}
+
+https://wilds-prod-hunter-profile.s3.ap-northeast-1.amazonaws.com:50185 https://wilds-prod-character-creation.s3.ap-northeast-1.amazonaws.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    import PNA_CORS
+    reverse_proxy https://s3.dualstack.ap-northeast-1.amazonaws.com {
+    header_up Host {host}
+    transport http {
+    tls
+    tls_insecure_skip_verify
+    tls_server_name s3.dualstack.ap-northeast-1.amazonaws.com
+    }
+    }
+}
+
+https://identitytoolkit.googleapis.com:50185 {
+tls steamcommunity.crt steamcommunity.key
+    reverse_proxy https://gs01.steam302.xyz https://gs02.steam302.xyz https://gs03.steam302.xyz https://gs04.steam302.xyz https://gs05.steam302.xyz https://gs06.steam302.xyz https://gs07.steam302.xyz https://gs08.steam302.xyz https://gs09.steam302.xyz https://gs10.steam302.xyz {
+    header_up Host {host}
+	health_headers {
+			Full-Upstream {http.reverse_proxy.active.target_upstream}
+			host identitytoolkit.googleapis.com
+		}
+
+        lb_policy       random
+        lb_try_duration 5s
+        lb_try_interval 250ms
+
+        health_uri      /
+        health_status   404
+        health_interval 30s
+        health_timeout  3s
+
+        max_fails       2
+        fail_duration   1m
+
+    transport http {
+    tls
+    #tls_insecure_skip_verify
+    tls_server_name scholar.google.cn
+    }
+    }
+}
+
+https://*.steamserver.net:50185 {
+#tls self_signed
+tls steamcommunity.crt steamcommunity.key
+
+    reverse_proxy https://cmp1-hkg1.steamserver.net:27018 https://cmp1-hkg1.steamserver.net:27019 https://cmp1-hkg1.steamserver.net:27020 https://cmp1-hkg1.steamserver.net:27021 https://cmp1-hkg1.steamserver.net:27022 https://cmp1-hkg1.steamserver.net:27023 https://cmp1-hkg1.steamserver.net:443 {
+    header_up Host cmp1-hkg1.steamserver.net
+    lb_policy random
+    transport http {
+    tls
+    tls_server_name cmp1-hkg1.steamserver.net
+    #tls_insecure_skip_verify
+    }
+    }
+}
+
+http://:49375 {
+    redir https://{host}{uri} permanent
+}
+
